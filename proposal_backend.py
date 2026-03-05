@@ -23,7 +23,7 @@ def clear_table_rows(table, keep_header=True):
 def generate_proposal(data):
     """Load template and populate all data"""
     
-    template_path = "Proposal_Template__2019-09-25_.docx"
+    template_path = "Proposal Template (2019-09-25).docx"
     
     if not os.path.exists(template_path):
         raise Exception(f"Template not found: {template_path}")
