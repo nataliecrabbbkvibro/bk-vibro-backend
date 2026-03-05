@@ -1,0 +1,5 @@
+flask==3.0.0
+flask-cors==4.0.0
+docxtpl==0.16.4
+python-docx==0.8.11
+gunicorn==21.2.0
