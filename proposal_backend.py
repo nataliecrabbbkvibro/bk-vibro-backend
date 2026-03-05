@@ -13,7 +13,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for React
 
 # Path to your template
-TEMPLATE_PATH = "Proposal_Template__2019-09-25_.docx"
+TEMPLATE_PATH = "Proposal Template (2019-09-25).docx"
 
 @app.route("/health", methods=["GET"])
 def health():
