@@ -251,12 +251,17 @@ def fill_scope_services_table(doc, scope_services):
     if not scope_services:
         scope_services = [{"group": "Services", "item": "", "description": "", "quantity": ""}]
 
-    for item in scope_services:
-        row = table.add_row()
-        set_cell_text(row.cells[0], item.get("group", "Services"))
-        set_cell_text(row.cells[1], item.get("item", ""))
-        set_cell_text(row.cells[2], item.get("description", ""))
-        set_cell_text(row.cells[3], item.get("quantity", ""))
+  for i, item in enumerate(scope_services):
+    row = table.add_row()
+
+    if i == 0:
+        set_cell_text(row.cells[0], "Services")
+    else:
+        set_cell_text(row.cells[0], "")
+
+    set_cell_text(row.cells[1], item.get("item", ""))
+    set_cell_text(row.cells[2], item.get("description", ""))
+    set_cell_text(row.cells[3], item.get("quantity", ""))
 
 
 def update_services_responsibilities_table(doc, responsibilities):
