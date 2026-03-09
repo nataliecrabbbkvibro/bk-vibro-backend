@@ -232,36 +232,40 @@ def update_product_assumptions_table(doc, product_assumptions):
             set_cell_text(row.cells[1], "X" if item.get("vendor") else "")
             # Keep row.cells[2] unchanged on purpose
 
-
 def fill_scope_services_table(doc, scope_services):
     """
     Table 4 - Services Scope of Supply
     Expandable.
     """
-    table = find_table_with_any_marker(doc, ["<SVC_ITEM1>", "Vendor will provide the following services"])
+    table = find_table_with_any_marker(
+        doc,
+        ["<SVC_ITEM1>", "Vendor will provide the following services"]
+    )
+
     if table is None:
-        # fallback by matching the coded placeholder in any table cell
         table = find_table_with_any_marker(doc, ["<SVC_DESC1>", "<SVC_QTY1>"])
+
     if table is None:
         return
 
     clear_table_rows(table, keep_rows=1)
 
     if not scope_services:
-        scope_services = [{"group": "Services", "item": "", "description": "", "quantity": ""}]
+        scope_services = [
+            {"group": "Services", "item": "", "description": "", "quantity": ""}
+        ]
 
-  for i, item in enumerate(scope_services):
-    row = table.add_row()
+    for i, item in enumerate(scope_services):
+        row = table.add_row()
 
-    if i == 0:
-        set_cell_text(row.cells[0], "Services")
-    else:
-        set_cell_text(row.cells[0], "")
+        if i == 0:
+            set_cell_text(row.cells[0], "Services")
+        else:
+            set_cell_text(row.cells[0], "")
 
-    set_cell_text(row.cells[1], item.get("item", ""))
-    set_cell_text(row.cells[2], item.get("description", ""))
-    set_cell_text(row.cells[3], item.get("quantity", ""))
-
+        set_cell_text(row.cells[1], item.get("item", ""))
+        set_cell_text(row.cells[2], item.get("description", ""))
+        set_cell_text(row.cells[3], item.get("quantity", ""))
 
 def update_services_responsibilities_table(doc, responsibilities):
     """
