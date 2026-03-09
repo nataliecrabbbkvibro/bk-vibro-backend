@@ -9,8 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Change this only if your actual template filename is different in GitHub
-TEMPLATE_PATH = TEMPLATE_PATH = "Proposal Template (2019-09-25).docx"
-
+TEMPLATE_PATH = "Proposal Template (2019-09-25).docx"
 
 def normalize_text(value):
     return " ".join(str(value).strip().lower().split())
