@@ -259,9 +259,9 @@ def fill_scope_services_table(doc, scope_services):
         row = table.add_row()
 
         if i == 0:
-            set_cell_text(row.cells[0], "Services")
-        else:
-            set_cell_text(row.cells[0], "")
+    set_cell_text(row.cells[0], "Svc")
+else:
+    set_cell_text(row.cells[0], "")
 
         set_cell_text(row.cells[1], item.get("item", ""))
         set_cell_text(row.cells[2], item.get("description", ""))
