@@ -272,43 +272,36 @@ def update_services_responsibilities_table(doc, responsibilities):
         doc,
         ["Receiving, off-loading and storage of Vendor provided parts", "Machine disassembly/assembly"]
     )
+def fill_scope_services_table(doc, scope_services):
+    table = find_table_with_any_marker(
+        doc,
+        ["<SVC_ITEM1>", "Vendor will provide the following services"]
+    )
+
+    if table is None:
+        table = find_table_with_any_marker(doc, ["<SVC_DESC1>", "<SVC_QTY1>"])
+
     if table is None:
         return
 
-    incoming = {
-        normalize_text(item.get("description", "")): item
-        for item in responsibilities
-    }
+    clear_table_rows(table, keep_rows=1)
 
-    # Expected columns:
-    # 0 = Item
-    # 1 = Description
-    # 2 = N/A
-    # 3 = Vendor
-    # 4 = Buyer
-    for row in table.rows[1:]:
-        desc = normalize_text(row.cells[1].text)
-        item = incoming.get(desc)
+    if not scope_services:
+        scope_services = [
+            {"group": "Services", "item": "", "description": "", "quantity": ""}
+        ]
 
-        if item:
-            na = bool(item.get("na"))
-            vendor = bool(item.get("vendor"))
-            buyer = bool(item.get("buyer"))
+    for i, item in enumerate(scope_services):
+        row = table.add_row()
 
-            # Keep one X choice clean
-            if na:
-                vendor = False
-                buyer = False
-            elif vendor:
-                na = False
-                buyer = False
-            elif buyer:
-                na = False
-                vendor = False
+        if i == 0:
+            set_cell_text(row.cells[0], "Services")
+        else:
+            set_cell_text(row.cells[0], "")
 
-            set_cell_text(row.cells[2], "X" if na else "")
-            set_cell_text(row.cells[3], "X" if vendor else "")
-            set_cell_text(row.cells[4], "X" if buyer else "")
+        set_cell_text(row.cells[1], item.get("item", ""))
+        set_cell_text(row.cells[2], item.get("description", ""))
+        set_cell_text(row.cells[3], item.get("quantity", ""))
 
 
 def fill_exceptions_table(doc, exceptions):
