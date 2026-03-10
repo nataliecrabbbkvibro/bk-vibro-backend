@@ -105,6 +105,8 @@ def replace_everywhere(doc, replacements):
 # ── FIX: REMOVE YELLOW HIGHLIGHT ─────────────────────────────────────────────
 
 def remove_highlight_all(doc):
+    """Remove run-level AND cell-level yellow highlight/shading from data rows."""
+    # Run-level highlights
     for para in iter_all_paragraphs(doc):
         for run in para.runs:
             rPr = run._r.find(qn('w:rPr'))
@@ -113,6 +115,18 @@ def remove_highlight_all(doc):
                     rPr.remove(h)
                 for h in rPr.findall(qn('w:shd')):
                     rPr.remove(h)
+    # Cell-level shading on data rows (skip header row 0)
+    for table in doc.tables:
+        for row in table.rows[1:]:
+            for cell in row.cells:
+                tc = cell._tc
+                tcPr = tc.find(qn('w:tcPr'))
+                if tcPr is not None:
+                    for sh in tcPr.findall(qn('w:shd')):
+                        fill = sh.get(qn('w:fill'), '')
+                        # Only remove non-white, non-auto fills (i.e. actual color highlights)
+                        if fill.upper() not in ('', 'AUTO', 'FFFFFF', 'FFFFE0'):
+                            tcPr.remove(sh)
 
 
 # ── FIX: WIDEN SERVICES GROUP COLUMN ─────────────────────────────────────────
@@ -249,6 +263,11 @@ def fill_scope_services_table(doc, scope_services):
 
 
 def update_services_responsibilities_table(doc, responsibilities):
+    """
+    Table columns: 0=Item, 1=Description, 2=N/A, 3=Vendor, 4=Buyer
+    Never touch column 0 (item numbers) or column 1 (description text).
+    Only write X values into columns 2, 3, 4.
+    """
     table = find_table_with_any_marker(
         doc, ["Receiving, off-loading and storage of Vendor provided parts", "Machine disassembly/assembly"]
     )
@@ -262,9 +281,9 @@ def update_services_responsibilities_table(doc, responsibilities):
         desc = normalize_text(row.cells[1].text)
         item = incoming.get(desc)
         if item:
-            set_cell_text(row.cells[0], "X" if item.get("buyer") else "")
             set_cell_text(row.cells[2], "X" if item.get("na") else "")
             set_cell_text(row.cells[3], "X" if item.get("vendor") else "")
+            set_cell_text(row.cells[4], "X" if item.get("buyer") else "")
 
 
 def fill_exceptions_table(doc, exceptions):
